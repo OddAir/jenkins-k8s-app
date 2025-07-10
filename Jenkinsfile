@@ -14,9 +14,12 @@ pipeline {
     stages {
         stage('1. Checkout Code') {
             steps {
-                // VIKTIG ENDRING HER: Fra 'string' til 'usernamePassword'
+                // ENDRET HER: Bruker sh for git clone/checkout med eksplisitte credentials i URL
                 withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'GIT_USERNAME_VAR', passwordVariable: 'GIT_PASSWORD_VAR')]) {
-                    git credentialsId: GITHUB_CREDENTIALS_ID, url: 'https://github.com/OddAir/jenkins-k8s-app.git'
+                    sh """
+                        git clone https://${GIT_USERNAME_VAR}:${GIT_PASSWORD_VAR}@github.com/OddAir/jenkins-k8s-app.git .
+                        git checkout main
+                    """
                 }
             }
         }
