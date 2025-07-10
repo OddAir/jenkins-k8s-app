@@ -9,13 +9,13 @@ pipeline {
     environment {
         DOCKER_IMAGE = "oddair/oddair:${env.BUILD_NUMBER}"
         DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials' 
-        GITHUB_CREDENTIALS_ID = 'github-pat' // Legg til denne linjen!
+        GITHUB_CREDENTIALS_ID = 'github-pat'
     }
     stages {
         stage('1. Checkout Code') {
             steps {
-                // Bruker github-pat credentialen eksplisitt for dette git-steget
-                withCredentials([string(credentialsId: GITHUB_CREDENTIALS_ID, variable: 'GITHUB_TOKEN')]) {
+                // VIKTIG ENDRING HER: Fra 'string' til 'usernamePassword'
+                withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'GIT_USERNAME_VAR', passwordVariable: 'GIT_PASSWORD_VAR')]) {
                     git credentialsId: GITHUB_CREDENTIALS_ID, url: 'https://github.com/OddAir/jenkins-k8s-app.git'
                 }
             }
